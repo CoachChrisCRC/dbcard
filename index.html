@@ -11,11 +11,11 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Coach Chris">
     
-    <!-- App Icons -->
-    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/coachchriscrc/WodGenerator/main/WodGenerator-AppIcon.png">
+    <!-- 1. iOS Icon: Replace the URL below with your raw GitHub image link -->
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/YOUR_ICON_NAME.png">
     
-    <!-- Manifest Data URI (Self-Contained PWA) -->
-    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Coach%20Chris%20CRC%22,%22short_name%22:%22CoachChris%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%23121412%22,%22theme_color%22:%22%23121412%22,%22icons%22:[{%22src%22:%22https://raw.githubusercontent.com/coachchriscrc/WodGenerator/main/WodGenerator-AppIcon.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22,%22purpose%22:%22any%20maskable%22}]} " />
+    <!-- 2. Android/Chrome Manifest: Replace the URL inside the %22src%22 section -->
+    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Coach%20Chris%20CRC%22,%22short_name%22:%22CoachChris%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%23121412%22,%22theme_color%22:%22%23121412%22,%22icons%22:[{%22src%22:%22https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/YOUR_ICON_NAME.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22,%22purpose%22:%22any%20maskable%22}]} " />
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -104,7 +104,6 @@
     </div>
 
     <script>
-        // --- SERVICE WORKER REGISTRATION (PWA) ---
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const swCode = `
@@ -122,16 +121,13 @@
             });
         }
 
-        // Initialize icons
         lucide.createIcons();
 
-        // Redirect logic
         const skipBtn = document.getElementById('skip-btn');
         skipBtn.addEventListener('click', () => {
             window.location.href = "https://coachchriscrc.carrd.co";
         });
 
-        // Generate QR Code for current URL
         const qrContainer = document.getElementById("qrcode");
         new QRCode(qrContainer, {
             text: window.location.href,
@@ -142,7 +138,6 @@
             correctLevel : QRCode.CorrectLevel.H
         });
 
-        // Animation load
         window.onload = () => {
             const mainIcon = document.getElementById('main-icon');
             setTimeout(() => {
