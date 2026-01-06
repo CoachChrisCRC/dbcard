@@ -102,6 +102,7 @@
             <div id="status-text" class="text-[9px] text-zinc-600 font-mono uppercase tracking-widest">Scanning Vitals...</div>
         </div>
 
+        <!-- Post-Load Dashboard -->
         <div id="dashboard-ui" class="hidden-el w-full flex flex-col items-center">
             <div class="glass-panel p-6 w-full mb-6">
                 <div id="qrcode" class="mb-4"></div>
@@ -117,7 +118,7 @@
     </div>
 
     <script>
-        // Inline Service Worker for PWA functionality
+        // Inline Service Worker
         const swCode = `self.addEventListener('install', e => self.skipWaiting()); self.addEventListener('fetch', e => e.respondWith(fetch(e.request)));`;
         const swBlob = new Blob([swCode], {type: 'application/javascript'});
         if ('serviceWorker' in navigator) { navigator.serviceWorker.register(URL.createObjectURL(swBlob)); }
@@ -145,22 +146,25 @@
         let deferredPrompt;
         let width = 0;
         
-        // Adaptive speed: Standalone (App) users get a fast 1s load. Browser users get a slower 3s load.
+        // Original fast loading speed
+        const progressIncrement = 4.5; 
+        
+        // Detect if already installed/running as standalone PWA
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-        const progressIncrement = isStandalone ? 4.0 : 1.2; 
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
         });
 
-        function showDashboard() {
-            // Skip dashboard if already installed
+        function handleCompletion() {
+            // IF ALREADY INSTALLED: Skip the dashboard and redirect immediately
             if (isStandalone) {
                 window.location.replace(targetUrl);
                 return;
             }
 
+            // IF IN BROWSER: Show dashboard with Install/QR options
             loaderUi.classList.add('hidden');
             mainIcon.style.transform = 'scale(0.7) translateY(-20px)';
             mainIcon.style.opacity = '0.5';
@@ -191,7 +195,7 @@
                 width = 100;
                 progressBar.style.width = '100%';
                 statusText.innerText = "Connection Established";
-                setTimeout(showDashboard, 800);
+                setTimeout(handleCompletion, 800);
             } else {
                 progressBar.style.width = width + '%';
                 const phases = ["Syncing", "Authenticating", "Loading Vitals", "Finalizing"];
