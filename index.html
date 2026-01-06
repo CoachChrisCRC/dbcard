@@ -6,16 +6,16 @@
     <title>Coach Chris CRC</title>
     
     <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#121412">
+    <meta name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Coach Chris">
+    <meta name="apple-mobile-web-app-title" content="WOD Gen">
     
-    <!-- Updated App Icon for iOS -->
-    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/coachchriscrc/WodGenerator/main/CoachChrisCRC-AppIcon.png">
+    <!-- App Icons -->
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/coachchriscrc/WodGenerator/main/WodGenerator-AppIcon.png">
     
-    <!-- Updated Manifest for Android/Chrome (Self-Contained PWA) -->
-    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Coach%20Chris%20CRC%22,%22short_name%22:%22CoachChris%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%23121412%22,%22theme_color%22:%22%23121412%22,%22icons%22:[{%22src%22:%22https://raw.githubusercontent.com/coachchriscrc/WodGenerator/main/CoachChrisCRC-AppIcon.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22,%22purpose%22:%22any%20maskable%22}]} " />
+    <!-- Manifest Data URI (Self-Contained PWA) -->
+    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22WOD%20Generator%20Coach%20Chris%22,%22short_name%22:%22WOD%20Gen%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%23000000%22,%22theme_color%22:%22%23000000%22,%22icons%22:[{%22src%22:%22https://raw.githubusercontent.com/coachchriscrc/WodGenerator/main/WodGenerator-AppIcon.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22,%22purpose%22:%22any%20maskable%22}]} " />
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -108,7 +108,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const swCode = `
-                    const CACHE_NAME = 'coach-chris-crc-v1';
+                    const CACHE_NAME = 'coach-chris-wod-v1';
                     self.addEventListener('install', (event) => {
                         event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(['./'])));
                     });
