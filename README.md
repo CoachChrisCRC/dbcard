@@ -1,4 +1,4 @@
-# app
-PWA Loading Animation &amp; Link to Site
+# Links Card
+PWA Loading Animation &amp; Link Card Site
 
 https://coachchriscrc.github.io/links
