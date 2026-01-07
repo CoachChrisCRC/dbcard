@@ -39,6 +39,63 @@
             transition: background-color 0.1s linear, color 0.1s linear;
         }
 
+        /* Splash Screen Styles */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.6s cubic-bezier(0.65, 0, 0.35, 1), 
+                        transform 0.6s cubic-bezier(0.65, 0, 0.35, 1),
+                        visibility 0.6s;
+            transform: scale(1);
+        }
+
+        #splash-screen.fade-out {
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(1.05);
+        }
+
+        .pulse-animation {
+            animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: .7; transform: scale(0.97); }
+        }
+
+        .loader-bar {
+            width: 140px;
+            height: 2px;
+            background: rgba(128, 138, 92, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 24px;
+        }
+
+        .loader-progress {
+            width: 100%;
+            height: 100%;
+            background: #808a5c;
+            transform-origin: left;
+            animation: load 1s ease-in-out infinite;
+        }
+
+        @keyframes load {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Dashboard Styles */
         .glass-panel {
             background: rgba(0, 0, 0, 0.03);
             backdrop-filter: blur(10px);
@@ -69,7 +126,6 @@
             border-width: 4px;
         }
 
-        /* Revised Install Button Styling */
         #install-prompt {
             display: none;
             width: 100%;
@@ -90,8 +146,24 @@
 </head>
 <body>
 
+    <!-- Splash Screen -->
+    <div id="splash-screen">
+        <div class="pulse-animation flex flex-col items-center">
+            <div class="relative flex items-center justify-center bg-zinc-800/30 rounded-full w-24 h-24 border border-[#808a5c]/30 mb-6">
+                <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#808a5c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M0 12h2l1.5-4 1.5 8 2-14 2.5 20 2-10 2 4h10.5" class="heartrate-path"></path>
+                </svg>
+            </div>
+            <h1 class="text-white text-xl font-black uppercase tracking-[0.2em]">Coach Chris <span class="text-[#808a5c]">CRC</span></h1>
+            <div class="loader-bar">
+                <div class="loader-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
     <div class="flex flex-col items-center text-center p-6 w-full max-sm:max-w-xs py-10">
-        <div id="main-icon" class="mb-8 transition-all duration-1000 scale-[0.7] -translate-y-[20px] opacity-50">
+        <div id="main-icon" class="mb-8 transition-all duration-700 scale-[0.7] -translate-y-[20px] opacity-0">
             <div id="icon-container" class="relative flex items-center justify-center bg-zinc-400/10 rounded-full w-28 h-28 border shadow-[0_0_40px_rgba(128,138,92,0.1)]">
                 <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#808a5c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M0 12h2l1.5-4 1.5 8 2-14 2.5 20 2-10 2 4h10.5" opacity="0.1"></path>
@@ -100,23 +172,21 @@
             </div>
         </div>
 
-        <div id="branding" class="mb-6">
+        <div id="branding" class="mb-6 opacity-0 transition-opacity duration-700">
             <h1 class="text-3xl font-black uppercase tracking-tighter mb-2">
                 Coach Chris <span class="text-[#808a5c]">CRC</span>
             </h1>
             <p id="sub-label" class="text-black text-[9px] uppercase tracking-[0.4em] font-bold">FITTER. STRONGER. BETTER.</p>
         </div>
 
-        <div id="dashboard-ui" class="flex w-full flex-col items-center slide-up">
+        <div id="dashboard-ui" class="flex w-full flex-col items-center opacity-0 transform translate-y-4 transition-all duration-700">
             <div class="glass-panel p-6 w-full mb-6">
                 <div id="qrcode" class="mb-4"></div>
                 <p id="qr-label" class="text-[10px] text-zinc-400 uppercase tracking-widest leading-relaxed">Scan to share or open<br>on another device</p>
             </div>
             
             <div class="flex flex-col w-full">
-                <!-- Inline Install Button -->
                 <button id="install-prompt">Install App for Best Experience</button>
-                
                 <button id="skip-btn" class="flex-1 bg-zinc-800 text-zinc-300 py-4 rounded-2xl font-black text-[9px] tracking-[0.05em] uppercase hover:bg-zinc-700 active:scale-95 transition-all">
                     Continue with Browser
                 </button>
@@ -125,14 +195,45 @@
     </div>
 
     <script>
-        // --- IMPROVED PWA REGISTRATION ---
+        const EXTERNAL_URL = "https://coachchriscrc.carrd.co";
+
+        // Check if running in standalone mode (PWA)
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone || document.referrer.includes('android-app://');
+
+        // Splash Screen Handling
+        window.addEventListener('load', () => {
+            const splash = document.getElementById('splash-screen');
+            const mainIcon = document.getElementById('main-icon');
+            const branding = document.getElementById('branding');
+            const ui = document.getElementById('dashboard-ui');
+            
+            setTimeout(() => {
+                // If PWA is installed, redirect automatically after loading
+                if (isStandalone) {
+                    window.location.href = EXTERNAL_URL;
+                    return; // Stop UI rendering if redirecting
+                }
+
+                splash.classList.add('fade-out');
+                
+                // Orchestrated entrance for browser users
+                setTimeout(() => {
+                    mainIcon.classList.remove('scale-[0.7]', '-translate-y-[20px]', 'opacity-0');
+                    mainIcon.classList.add('opacity-50');
+                    branding.classList.remove('opacity-0');
+                    ui.classList.remove('opacity-0', 'translate-y-4');
+                }, 200); 
+            }, 1000);
+        });
+
+        // PWA Registration
         let deferredPrompt;
         const installBtn = document.getElementById('install-prompt');
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const swCode = `
-                    const CACHE_NAME = 'coach-chris-v2';
+                    const CACHE_NAME = 'coach-chris-v3';
                     self.addEventListener('install', (e) => {
                         e.waitUntil(caches.open(CACHE_NAME).then((c) => c.addAll(['./'])));
                     });
@@ -142,9 +243,7 @@
                 `;
                 const blob = new Blob([swCode], { type: 'application/javascript' });
                 const workerUrl = URL.createObjectURL(blob);
-                navigator.serviceWorker.register(workerUrl).then(reg => {
-                    console.log('Service Worker Registered');
-                }).catch(err => console.log('SW Registration Failed', err));
+                navigator.serviceWorker.register(workerUrl).catch(err => console.log('SW Registration Failed', err));
             });
         }
 
@@ -165,7 +264,7 @@
             }
         });
 
-        window.addEventListener('appinstalled', (evt) => {
+        window.addEventListener('appinstalled', () => {
             installBtn.style.display = 'none';
         });
 
@@ -173,7 +272,7 @@
         lucide.createIcons();
         const skipBtn = document.getElementById('skip-btn');
         skipBtn.addEventListener('click', () => {
-            window.location.href = "https://coachchriscrc.carrd.co";
+            window.location.href = EXTERNAL_URL;
         });
 
         const qrContainer = document.getElementById("qrcode");
@@ -185,13 +284,6 @@
             colorLight : "#ffffff",
             correctLevel : QRCode.CorrectLevel.H
         });
-
-        window.onload = () => {
-            const mainIcon = document.getElementById('main-icon');
-            setTimeout(() => {
-                mainIcon.classList.remove('scale-[0.7]', '-translate-y-[20px]', 'opacity-50');
-            }, 100);
-        };
     </script>
 </body>
 </html>
