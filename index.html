@@ -58,7 +58,7 @@
         }
         #splash-screen.fade-out { opacity: 0; visibility: hidden; }
 
-        /* Transition Screen */
+        /* Transition Screen (Secondary Loader) */
         #transition-screen {
             position: fixed;
             top: 0;
@@ -170,7 +170,7 @@
             position: fixed;
             top: 30px;
             right: 30px;
-            display: flex;
+            display: none;
             align-items: center;
             gap: 10px;
             z-index: 9000;
@@ -243,7 +243,7 @@
         </div>
     </div>
 
-    <!-- Transition Screen (Navigation Loading) -->
+    <!-- Transition Screen (Secondary Loader) -->
     <div id="transition-screen">
         <div class="flex flex-col items-center">
             <div class="logo-carousel-container">
@@ -282,8 +282,8 @@
 
     <!-- Floating Save Button (Top Right) -->
     <div class="fab-container" id="save-ui-container">
-        <div class="fab" id="fab-save" title="Save to Device">
-            <i data-lucide="download" class="w-6 h-6"></i>
+        <div class="fab" id="fab-save" title="Install App">
+            <i data-lucide="plus" class="w-6 h-6"></i>
         </div>
         <div class="fab-dismiss" id="fab-dismiss" title="Dismiss">
             <i data-lucide="x" class="w-4 h-4"></i>
@@ -351,6 +351,20 @@
         const fabDismiss = document.getElementById('fab-dismiss');
         const saveUiContainer = document.getElementById('save-ui-container');
 
+        let deferredPrompt;
+
+        // Check standalone mode
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+        // The button only shows if we have a prompt and aren't installed
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            if (!isStandalone) {
+                saveUiContainer.style.display = 'flex';
+            }
+        });
+
         async function runAvatarSequence() {
             setTimeout(() => {
                 flipper.style.transform = 'rotateY(180deg)';
@@ -371,29 +385,21 @@
 
         window.addEventListener('load', () => setTimeout(revealDashboard, 2000));
 
-        // Save to Device Logic
-        fabSave.addEventListener('click', () => {
-            const vcard = `BEGIN:VCARD
-VERSION:3.0
-FN:Chris Hedley
-ORG:Circular Roots Coaching;TRAIN UNCNVNTNL
-TITLE:Online Coach & PT
-URL:https://coachchriscrc.carrd.co
-END:VCARD`;
-            const blob = new Blob([vcard], { type: 'text/vcard' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'ChrisHedley.vcf';
-            a.click();
-            window.URL.revokeObjectURL(url);
+        fabSave.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    saveUiContainer.style.display = 'none';
+                }
+                deferredPrompt = null;
+            }
         });
 
         fabDismiss.addEventListener('click', () => {
             saveUiContainer.style.display = 'none';
         });
 
-        // Drag/Swipe Logic
         let isDragging = false;
         let startX = 0;
 
@@ -418,7 +424,12 @@ END:VCARD`;
             handle.style.transition = 'transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
             handle.style.transform = `translateX(0px)`;
             swipeText.style.opacity = 1;
+            transitionScreen.classList.remove('active');
         }
+
+        window.addEventListener('pageshow', (event) => {
+            resetSwipe();
+        });
 
         function onEnd() {
             if (!isDragging) return;
@@ -430,19 +441,14 @@ END:VCARD`;
             if (matrix.m41 >= maxDelta * 0.9) {
                 handle.style.transition = 'transform 0.2s ease-out';
                 handle.style.transform = `translateX(${maxDelta}px)`;
-                
-                // Show loading screen
                 transitionScreen.classList.add('active');
                 
-                // Navigate
-                window.location.href = EXTERNAL_URL;
-
-                // Safety: If the user stays on the page (e.g. back button or tab stays open),
-                // hide the loader after a short timeout so they aren't stuck.
                 setTimeout(() => {
-                    transitionScreen.classList.remove('active');
-                    resetSwipe();
-                }, 1500);
+                    window.location.href = EXTERNAL_URL;
+                    setTimeout(() => {
+                        resetSwipe();
+                    }, 500);
+                }, 800);
             } else {
                 resetSwipe();
             }
