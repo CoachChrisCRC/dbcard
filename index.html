@@ -258,7 +258,7 @@
                 </div>
                 <p class="text-[#808a5c] text-xs font-black uppercase tracking-[0.3em]">#FITTER #STRONGER #BETTER</p>
             </div>
-            <button id="close-qr" class="w-full bg-zinc-900 text-white py-5 rounded-2xl text-xs font-black uppercase tracking-widest active:scale-95 transition-transform">Dismiss</button>
+            <button id="close-qr" class="w-full bg-zinc-900 text-white py-5 rounded-2xl text-xs font-black uppercase tracking-widest active:scale-95 transition-transform">Close</button>
         </div>
     </div>
 
@@ -384,7 +384,7 @@
             }
         });
 
-        // Generate vCard
+        // Generate vCard with custom label support
         saveVcardBtn.addEventListener('click', () => {
             const vcard = [
                 "BEGIN:VCARD",
@@ -394,7 +394,9 @@
                 `EMAIL;TYPE=WORK,INTERNET:${CONTACT_INFO.email}`,
                 `TEL;TYPE=CELL,VOICE:${CONTACT_INFO.phone}`,
                 `URL;TYPE=WORK:${CONTACT_INFO.web}`,
-                `URL;TYPE=WHATSAPP:${CONTACT_INFO.whatsapp}`,
+                // Using X-ABLabel extension to tag the WhatsApp link specifically
+                "item1.URL:" + CONTACT_INFO.whatsapp,
+                "item1.X-ABLabel:WhatsApp",
                 "END:VCARD"
             ].join("\n");
 
