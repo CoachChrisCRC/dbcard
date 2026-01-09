@@ -100,16 +100,6 @@
             transform-style: preserve-3d;
         }
 
-        .card-container::before {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            background: linear-gradient(135deg, #ffffff, #e2e2e2, #808a5c, #ffffff);
-            z-index: -1;
-            border-radius: 50px;
-            opacity: 0.3;
-        }
-
         .avatar-ring { 
             position: relative; 
             padding: 8px; 
@@ -291,7 +281,7 @@
                     <div class="swipe-handle" id="swipe-handle">
                         <i data-lucide="chevron-right" class="w-6 h-6"></i>
                     </div>
-                    <span class="swipe-text" id="swipe-text">Swipe to Explore</span>
+                    <span class="swipe-text" id="swipe-text">Swipe for More Info</span>
                 </div>
             </div>
 
@@ -303,13 +293,16 @@
 
     <script>
         const EXTERNAL_URL = "https://coachchriscrc.carrd.co";
+        
+        // Exact contact details requested
         const CONTACT_INFO = {
             name: "Coach Chris (Chris Hedley)",
-            phone: "447925116794",
+            phone: "+447925116794",
             email: "Circularrootscoaching@gmail.com",
             web: "https://coachchriscrc.carrd.co",
-            instagram: "chris.h_crc"
+            whatsapp: "https://wa.me/447925116794"
         };
+
         const LOGOS = [
             "https://raw.githubusercontent.com/CoachChrisCRC/linkscard/refs/heads/main/CRC-Logo.png",
             "https://raw.githubusercontent.com/CoachChrisCRC/linkscard/refs/heads/main/UNCNVNTNL-Logo.png",
@@ -358,16 +351,17 @@
 
         window.addEventListener('load', () => setTimeout(revealDashboard, 2000));
 
-        // Generate vCard with multiple website links
+        // Generate vCard with requested information
         saveVcardBtn.addEventListener('click', () => {
             const vcard = [
                 "BEGIN:VCARD",
                 "VERSION:3.0",
                 `FN:${CONTACT_INFO.name}`,
+                `N:Hedley;Chris (Coach Chris);;;`,
                 `EMAIL;TYPE=PREF,INTERNET:${CONTACT_INFO.email}`,
+                `TEL;TYPE=CELL,VOICE:${CONTACT_INFO.phone}`,
                 `URL;TYPE=WORK:${CONTACT_INFO.web}`,
-                `URL;TYPE=INSTAGRAM:https://instagram.com/${CONTACT_INFO.instagram}`,
-                `URL;TYPE=WHATSAPP:https://wa.me/${CONTACT_INFO.phone}`,
+                `URL;TYPE=WHATSAPP:${CONTACT_INFO.whatsapp}`,
                 "END:VCARD"
             ].join("\n");
 
@@ -422,7 +416,8 @@
         function onEnd() {
             if (!isDragging) return;
             isDragging = false;
-            const matrix = new WebKitCSSMatrix(window.getComputedStyle(handle).transform);
+            const style = window.getComputedStyle(handle);
+            const matrix = new WebKitCSSMatrix(style.transform);
             const trackWidth = document.querySelector('.swipe-track').offsetWidth;
             const maxDelta = trackWidth - 56 - 12;
             
