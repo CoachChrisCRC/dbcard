@@ -218,7 +218,7 @@
         </div>
     </div>
 
-    <!-- Transition Screen (Secondary Loader) -->
+    <!-- Transition Screen -->
     <div id="transition-screen">
         <div class="flex flex-col items-center">
             <div class="w-16 h-16 bg-[#808a5c] rounded-full animate-ping opacity-25"></div>
@@ -308,7 +308,7 @@
             phone: "+447925116794",
             email: "Circularrootscoaching@gmail.com",
             web: "https://coachchriscrc.carrd.co",
-            instagram: "@chris.h_crc",
+            instagram: "chris.h_crc", // Username only for social profile
             facebook: "Circular Roots Coaching"
         };
         const LOGOS = [
@@ -359,17 +359,26 @@
 
         window.addEventListener('load', () => setTimeout(revealDashboard, 2000));
 
-        // Generate vCard with Hyperlinked WhatsApp
+        // Generate vCard with Native Social Links and WhatsApp Integration
         saveVcardBtn.addEventListener('click', () => {
             const cleanPhone = CONTACT_INFO.phone.replace('+', '');
-            const vcard = `BEGIN:VCARD
-VERSION:3.0
-FN:${CONTACT_INFO.name}
-TEL;TYPE=CELL,VOICE:${CONTACT_INFO.phone}
-EMAIL;TYPE=PREF,INTERNET:${CONTACT_INFO.email}
-URL:${CONTACT_INFO.web}
-NOTE:Instagram: ${CONTACT_INFO.instagram}\\nFacebook: ${CONTACT_INFO.facebook}\\nWhatsApp Chat: https://wa.me/${cleanPhone}
-END:VCARD`;
+            
+            // vCard 3.0 format for better compatibility
+            // X-SOCIALPROFILE is the standard for modern mobile OS
+            // WhatsApp is added as an additional phone labeled 'WORK' (which many OS treat as a priority chat field)
+            const vcard = [
+                "BEGIN:VCARD",
+                "VERSION:3.0",
+                `FN:${CONTACT_INFO.name}`,
+                `TEL;TYPE=CELL,VOICE:${CONTACT_INFO.phone}`,
+                `TEL;TYPE=WORK,VOICE:wa.me/${cleanPhone}`, // WhatsApp pseudo-number for direct link
+                `EMAIL;TYPE=PREF,INTERNET:${CONTACT_INFO.email}`,
+                `URL:${CONTACT_INFO.web}`,
+                `X-SOCIALPROFILE;TYPE=instagram:https://instagram.com/${CONTACT_INFO.instagram}`,
+                `X-SOCIALPROFILE;TYPE=facebook:https://facebook.com/circularrootscoaching`,
+                `NOTE:WhatsApp: https://wa.me/${cleanPhone}\\nInstagram: @${CONTACT_INFO.instagram}\\nFacebook: ${CONTACT_INFO.facebook}`,
+                "END:VCARD"
+            ].join("\n");
 
             const blob = new Blob([vcard], { type: "text/vcard" });
             const url = window.URL.createObjectURL(blob);
