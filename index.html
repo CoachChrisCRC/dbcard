@@ -22,6 +22,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Rock+Salt&display=swap');
         
@@ -29,33 +35,34 @@
             --olive: #808a5c; 
             --bg-gradient-start: #ffffff;
             --bg-gradient-end: #f2f2f2;
-            --card-bg-gradient: radial-gradient(circle at top left, rgba(128, 138, 92, 0.15) 0%, rgba(255, 255, 255, 0.95) 100%);
-            --card-border: rgba(0, 0, 0, 0.05);
-            --card-inner-glow: rgba(255, 255, 255, 0.5);
+            --card-bg-gradient: radial-gradient(circle at top left, rgba(128, 138, 92, 0.15) 0%, rgba(255, 255, 255, 0.98) 100%);
+            --card-border: rgba(0, 0, 0, 0.1);
+            --card-inner-glow: rgba(255, 255, 255, 0.8);
             --card-shadow: rgba(0, 0, 0, 0.15);
-            --text-main: #000000;
-            --text-muted: #71717a;
-            --text-sub: #3f3f46;
+            --text-main: #09090b;
+            --text-muted: #52525b;
+            --text-sub: #27272a;
             --ring-bg: white;
             --track-bg: #ffffff;
-            --swipe-text: #a1a1aa;
+            --swipe-text: #71717a;
+            /* High Contrast Modal for Success Stories */
+            --modal-bg: #ffffff;
         }
 
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-gradient-start: #18181b;
-                --bg-gradient-end: #09090b;
-                --card-bg-gradient: radial-gradient(circle at top left, rgba(128, 138, 92, 0.2) 0%, rgba(24, 24, 27, 0.85) 100%);
-                --card-border: rgba(255, 255, 255, 0.1);
-                --card-inner-glow: rgba(255, 255, 255, 0.05);
-                --card-shadow: rgba(0, 0, 0, 0.5);
-                --text-main: #ffffff;
-                --text-muted: #a1a1aa;
-                --text-sub: #d4d4d8;
-                --ring-bg: #27272a;
-                --track-bg: rgba(39, 39, 42, 0.6);
-                --swipe-text: #71717a;
-            }
+        .dark {
+            --bg-gradient-start: #18181b;
+            --bg-gradient-end: #09090b;
+            --card-bg-gradient: radial-gradient(circle at top left, rgba(128, 138, 92, 0.2) 0%, rgba(24, 24, 27, 0.85) 100%);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --card-inner-glow: rgba(255, 255, 255, 0.05);
+            --card-shadow: rgba(0, 0, 0, 0.5);
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+            --text-sub: #d4d4d8;
+            --ring-bg: #27272a;
+            --track-bg: rgba(39, 39, 42, 0.6);
+            --swipe-text: #71717a;
+            --modal-bg: #18181b;
         }
         
         body { 
@@ -181,12 +188,12 @@
         }
         .swipe-text { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.15em; color: var(--swipe-text); pointer-events: none; }
 
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(15px); z-index: 9500; align-items: center; justify-content: center; padding: 24px; opacity: 0; transition: opacity 0.3s ease; }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 9500; align-items: center; justify-content: center; padding: 24px; opacity: 0; transition: opacity 0.3s ease; }
         .modal-overlay.active { display: flex; opacity: 1; }
+        
+        /* Updated Modal Content with solid background for light mode */
         .modal-content { 
-            background: var(--card-bg-gradient); 
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
+            background: var(--modal-bg); 
             border: 1px solid var(--card-border);
             border-radius: 40px; 
             width: 100%; 
@@ -194,7 +201,7 @@
             padding: 40px 24px; 
             transform: scale(0.9); 
             transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); 
-            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
             position: relative;
         }
         .modal-overlay.active .modal-content { transform: scale(1); }
@@ -206,9 +213,10 @@
             position: fixed;
             top: 30px;
             right: 30px;
-            display: none;
+            display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             z-index: 9000;
         }
         .fab {
@@ -227,6 +235,7 @@
             transition: all 0.3s ease;
             border: 2px solid var(--olive);
         }
+        .fab:active { transform: scale(0.9); }
 
         .ekg-path { stroke: var(--olive); stroke-width: 2; fill: none; stroke-dasharray: 500; stroke-dashoffset: 500; animation: ekg-draw 1.5s linear forwards; }
         @keyframes ekg-draw { 0% { stroke-dashoffset: 500; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 0; } }
@@ -298,7 +307,7 @@
                 <div class="w-16 h-16 rounded-full overflow-hidden bg-white/10 p-1 border border-white/20">
                     <img src="https://raw.githubusercontent.com/CoachChrisCRC/linkscard/refs/heads/main/UNCNVNTNL-Logo.png" class="w-full h-full object-contain">
                 </div>
-                <div class="relative w-36 h-36 rounded-full border-4 border-[#808a5c] overflow-hidden shadow-[0_0_40px_rgba(128,138,92,0.4)]">
+                <div class="relative w-36 h-36 rounded-full border-4 border-[#808a5c] overflow-hidden shadow-[0_0_40px_rgba(128, 138, 92, 0.4)]">
                     <img src="https://raw.githubusercontent.com/CoachChrisCRC/app/df3580c5a17d646dc6813a283f7e85e269fece8e/CoachChrisCRC-AppIcon.png" class="w-full h-full object-cover">
                 </div>
                 <div class="w-16 h-16 rounded-full overflow-hidden bg-white/10 p-1 border border-white/20">
@@ -361,7 +370,7 @@
                         <span class="text-[8px] font-black uppercase tracking-widest text-[#808a5c] block mb-1">Top Achievement:</span>
                         <h5 class="text-[11px] font-bold text-main leading-tight">Mastered Ring Muscle-Ups & Exceeded Potential</h5>
                     </div>
-                    <p class="text-[11px] italic leading-relaxed text-sub mb-4">"Chris genuinely wants you to succeed. He has a unique skill for identifying obvious improvements that create huge results, helping me achieve things I didn't think possible."</p>
+                    <p class="text-[12px] italic leading-relaxed text-main font-medium mb-4">"Chris genuinely wants you to succeed. He has a unique skill for identifying obvious improvements that create huge results, helping me achieve things I didn't think possible."</p>
                     <div class="flex flex-col">
                         <span class="text-[10px] font-black uppercase tracking-wider text-main">Paul "Spider" Chan</span>
                         <span class="text-[8px] font-bold uppercase tracking-widest text-muted">Business & Training Partner</span>
@@ -374,7 +383,7 @@
                         <span class="text-[8px] font-black uppercase tracking-widest text-[#808a5c] block mb-1">Top Achievement:</span>
                         <h5 class="text-[11px] font-bold text-main leading-tight">Major Strength Gains & Technique Improvement</h5>
                     </div>
-                    <p class="text-[11px] italic leading-relaxed text-sub mb-4">"I can lift way more now than I ever thought I’d be able to! Chris keeps every session engaging and encourages me to challenge myself constantly."</p>
+                    <p class="text-[12px] italic leading-relaxed text-main font-medium mb-4">"I can lift way more now than I ever thought I’d be able to! Chris keeps every session engaging and encourages me to challenge myself constantly."</p>
                     <div class="flex flex-col">
                         <span class="text-[10px] font-black uppercase tracking-wider text-main">Alana Giuliani</span>
                         <span class="text-[8px] font-bold uppercase tracking-widest text-muted">Personal Training Client</span>
@@ -387,7 +396,7 @@
                         <span class="text-[8px] font-black uppercase tracking-widest text-[#808a5c] block mb-1">Top Achievement:</span>
                         <h5 class="text-[11px] font-bold text-main leading-tight">Consistently Challenged through Varied Training</h5>
                     </div>
-                    <p class="text-[11px] italic leading-relaxed text-sub mb-4">"Chris provides challenging and varied sessions. He is always willing to go the extra mile to help with specific areas you need to work on."</p>
+                    <p class="text-[12px] italic leading-relaxed text-main font-medium mb-4">"Chris provides challenging and varied sessions. He is always willing to go the extra mile to help with specific areas you need to work on."</p>
                     <div class="flex flex-col">
                         <span class="text-[10px] font-black uppercase tracking-wider text-main">Louise Baker</span>
                         <span class="text-[8px] font-bold uppercase tracking-widest text-muted">Dedicated Client</span>
@@ -400,7 +409,7 @@
                         <span class="text-[8px] font-black uppercase tracking-widest text-[#808a5c] block mb-1">Top Achievement:</span>
                         <h5 class="text-[11px] font-bold text-main leading-tight">Transformation via Personalized Programming</h5>
                     </div>
-                    <p class="text-[11px] italic leading-relaxed text-sub mb-4">"I'm over the moon with my results. Chris is an excellent motivator; he knows your strengths and weaknesses and structures sessions with that knowledge."</p>
+                    <p class="text-[12px] italic leading-relaxed text-main font-medium mb-4">"I'm over the moon with my results. Chris is an excellent motivator; he knows your strengths and weaknesses and structures sessions with that knowledge."</p>
                     <div class="flex flex-col">
                         <span class="text-[10px] font-black uppercase tracking-wider text-main">Suzanne Thompson</span>
                         <span class="text-[8px] font-bold uppercase tracking-widest text-muted">PT & Custom Programming</span>
@@ -413,7 +422,7 @@
                         <span class="text-[8px] font-black uppercase tracking-widest text-[#808a5c] block mb-1">Top Achievement:</span>
                         <h5 class="text-[11px] font-bold text-main leading-tight">High Engagement & Positive Class Atmosphere</h5>
                     </div>
-                    <p class="text-[11px] italic leading-relaxed text-sub mb-4">"Always encouraging and happy. Everyone enjoys the classes every time—his energy is infectious and keeps us all coming back."</p>
+                    <p class="text-[12px] italic leading-relaxed text-main font-medium mb-4">"Always encouraging and happy. Everyone enjoys the classes every time—his energy is infectious and keeps us all coming back."</p>
                     <div class="flex flex-col">
                         <span class="text-[10px] font-black uppercase tracking-wider text-main">Kris McGough</span>
                         <span class="text-[8px] font-bold uppercase tracking-widest text-muted">Class Participant</span>
@@ -426,7 +435,7 @@
                         <span class="text-[8px] font-black uppercase tracking-widest text-[#808a5c] block mb-1">Top Achievement:</span>
                         <h5 class="text-[11px] font-bold text-main leading-tight">Mastered Lifting Technique & Pushed Limits</h5>
                     </div>
-                    <p class="text-[11px] italic leading-relaxed text-sub mb-4">"Chris taught me great technique for lifting and pushed me harder than I thought I could go. Highly recommended for anyone ready to up their game."</p>
+                    <p class="text-[12px] italic leading-relaxed text-main font-medium mb-4">"Chris taught me great technique for lifting and pushed me harder than I thought I could go. Highly recommended for anyone ready to up their game."</p>
                     <div class="flex flex-col">
                         <span class="text-[10px] font-black uppercase tracking-wider text-main">Vicky Jackson</span>
                         <span class="text-[8px] font-bold uppercase tracking-widest text-muted">Personal Training Client</span>
@@ -439,7 +448,7 @@
                         <span class="text-[8px] font-black uppercase tracking-widest text-[#808a5c] block mb-1">Top Achievement:</span>
                         <h5 class="text-[11px] font-bold text-main leading-tight">Optimized Running Form & Functional Balance</h5>
                     </div>
-                    <p class="text-[11px] italic leading-relaxed text-sub mb-4">"Chris quickly identified how strength training could improve my running technique, balance, and posture. It ain't an easy ride—but well worth the trip!"</p>
+                    <p class="text-[12px] italic leading-relaxed text-main font-medium mb-4">"Chris quickly identified how strength training could improve my running technique, balance, and posture. It ain't an easy ride—but well worth the trip!"</p>
                     <div class="flex flex-col">
                         <span class="text-[10px] font-black uppercase tracking-wider text-main">Lisa Watson</span>
                         <span class="text-[8px] font-bold uppercase tracking-widest text-muted">Running & Strength Client</span>
@@ -452,7 +461,7 @@
                         <span class="text-[8px] font-black uppercase tracking-widest text-[#808a5c] block mb-1">Top Achievement:</span>
                         <h5 class="text-[11px] font-bold text-main leading-tight">Holistic Goal-Driven Wellbeing Success</h5>
                     </div>
-                    <p class="text-[11px] italic leading-relaxed text-sub mb-4">"Chris is the living embodiment of positive goal-driven wellbeing. He knows exactly how to help you reach your goals if you invest the time."</p>
+                    <p class="text-[12px] italic leading-relaxed text-main font-medium mb-4">"Chris is the living embodiment of positive goal-driven wellbeing. He knows exactly how to help you reach your goals if you invest the time."</p>
                     <div class="flex flex-col">
                         <span class="text-[10px] font-black uppercase tracking-wider text-main">Kelly Coats</span>
                         <span class="text-[8px] font-bold uppercase tracking-widest text-muted">Wellness & Goal-Setting</span>
@@ -475,9 +484,15 @@
         </div>
     </div>
 
-    <!-- Floating Install Button -->
-    <div class="fab-container" id="save-ui-container">
-        <div class="fab" id="fab-save" title="Install App">
+    <!-- Floating Actions -->
+    <div class="fab-container">
+        <!-- Theme Toggle -->
+        <div class="fab" id="theme-toggle" title="Toggle Theme">
+            <i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i>
+            <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+        </div>
+        <!-- Install App -->
+        <div class="fab hidden" id="fab-save" title="Install App">
             <i data-lucide="download" class="w-5 h-5"></i>
         </div>
     </div>
@@ -567,21 +582,42 @@
         const flipper = document.getElementById('avatar-flipper');
         const frontImg = document.getElementById('avatar-front');
         const fabSave = document.getElementById('fab-save');
-        const saveUiContainer = document.getElementById('save-ui-container');
+        const themeToggle = document.getElementById('theme-toggle');
         const slider = document.getElementById('testimonial-slider');
         const dots = document.querySelectorAll('.testimonial-dot');
 
+        // Theme Management
+        function setTheme(isDark) {
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+
+        // Initialize theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            setTheme(savedTheme === 'dark');
+        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            setTheme(true);
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.contains('dark');
+            setTheme(!isDark);
+        });
+
         let deferredPrompt;
 
-        // PWA Installation handling
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            if (!isStandalone) saveUiContainer.style.display = 'flex';
+            if (!isStandalone) fabSave.classList.remove('hidden');
         });
 
-        // Intro Logo sequence
         async function runAvatarSequence() {
             setTimeout(() => flipper.style.transform = 'rotateY(180deg)', 800);
             setTimeout(() => {
@@ -598,9 +634,11 @@
             }, 200);
         }
 
-        window.addEventListener('load', () => setTimeout(revealDashboard, 1500));
+        window.addEventListener('load', () => {
+            lucide.createIcons();
+            setTimeout(revealDashboard, 1500);
+        });
 
-        // Testimonial slider logic
         slider.addEventListener('scroll', () => {
             const index = Math.round(slider.scrollLeft / slider.offsetWidth);
             dots.forEach((dot, i) => {
@@ -608,7 +646,6 @@
             });
         });
 
-        // Contact Save (vCard)
         saveVcardBtn.addEventListener('click', () => {
             const vcard = [
                 "BEGIN:VCARD",
@@ -638,17 +675,15 @@
             window.URL.revokeObjectURL(url);
         });
 
-        // App Installation
         fabSave.addEventListener('click', async () => {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') saveUiContainer.style.display = 'none';
+                if (outcome === 'accepted') fabSave.classList.add('hidden');
                 deferredPrompt = null;
             }
         });
 
-        // Swipe Interaction Logic
         let isDragging = false;
         let startX = 0;
 
@@ -686,13 +721,8 @@
             if (matrix.m41 >= maxDelta * 0.9) {
                 handle.style.transition = 'transform 0.2s ease-out';
                 handle.style.transform = `translateX(${maxDelta}px)`;
-                
-                // Show transition loader
                 transitionScreen.classList.add('active');
-                
-                // Navigate
                 window.location.href = EXTERNAL_URL;
-
                 setTimeout(() => {
                     transitionScreen.classList.remove('active');
                     resetSwipe();
@@ -709,16 +739,11 @@
         window.addEventListener('mouseup', onEnd);
         window.addEventListener('touchend', onEnd);
 
-        // Initialize Lucide Icons
-        lucide.createIcons();
-
-        // Modals
         openQrBtn.addEventListener('click', () => qrModal.classList.add('active'));
         closeQrBtn.addEventListener('click', () => qrModal.classList.remove('active'));
         openTestimonialsBtn.addEventListener('click', () => testimonialsModal.classList.add('active'));
         closeTestimonialsBtn.addEventListener('click', () => testimonialsModal.classList.remove('active'));
 
-        // Generate QR Code
         new QRCode(document.getElementById("qrcode"), {
             text: window.location.href,
             width: 240,
