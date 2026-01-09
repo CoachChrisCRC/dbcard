@@ -373,6 +373,17 @@
         // Timing synchronized exactly with 1.5s EKG animation sweep
         window.addEventListener('load', () => setTimeout(revealDashboard, 1500));
 
+        // CRITICAL: Handle back-navigation from external link
+        window.addEventListener('pageshow', (event) => {
+            if (event.persisted) {
+                // If loaded from cache (back button), immediately hide all loaders
+                splash.classList.add('fade-out');
+                transitionScreen.classList.remove('active');
+                mainCard.classList.remove('opacity-0', 'translate-y-12');
+                resetSwipe();
+            }
+        });
+
         // Generate vCard
         saveVcardBtn.addEventListener('click', () => {
             const vcard = [
