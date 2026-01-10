@@ -352,7 +352,7 @@
         </div>
     </div>
 
-    <!-- Transition Screen -->
+    <!-- Transition Screen (Used only for Swipe Navigation now) -->
     <div id="transition-screen">
         <div class="flex flex-col items-center">
             <div class="line-loader-container">
@@ -393,7 +393,7 @@
             </div>
             
             <div class="testimonial-slider" id="testimonial-slider">
-                <!-- Testimonial 1 -->
+                <!-- Testimonials -->
                 <div class="testimonial-card">
                     <div class="mb-3">
                         <span class="text-[8px] font-black uppercase tracking-widest text-[#808a5c] block mb-1">Top Achievement:</span>
@@ -406,7 +406,6 @@
                     </div>
                 </div>
                 
-                <!-- Testimonial 2 -->
                 <div class="testimonial-card">
                     <div class="mb-3">
                         <span class="text-[8px] font-black uppercase tracking-widest text-[#808a5c] block mb-1">Top Achievement:</span>
@@ -419,7 +418,6 @@
                     </div>
                 </div>
 
-                <!-- Testimonial 3 -->
                 <div class="testimonial-card">
                     <div class="mb-3">
                         <span class="text-[8px] font-black uppercase tracking-widest text-[#808a5c] block mb-1">Top Achievement:</span>
@@ -432,7 +430,6 @@
                     </div>
                 </div>
 
-                <!-- Testimonial 4 -->
                 <div class="testimonial-card">
                     <div class="mb-3">
                         <span class="text-[8px] font-black uppercase tracking-widest text-[#808a5c] block mb-1">Top Achievement:</span>
@@ -445,7 +442,6 @@
                     </div>
                 </div>
 
-                <!-- Testimonial 5 -->
                 <div class="testimonial-card">
                     <div class="mb-3">
                         <span class="text-[8px] font-black uppercase tracking-widest text-[#808a5c] block mb-1">Top Achievement:</span>
@@ -458,7 +454,6 @@
                     </div>
                 </div>
 
-                <!-- Testimonial 6 -->
                 <div class="testimonial-card">
                     <div class="mb-3">
                         <span class="text-[8px] font-black uppercase tracking-widest text-[#808a5c] block mb-1">Top Achievement:</span>
@@ -471,7 +466,6 @@
                     </div>
                 </div>
 
-                <!-- Testimonial 7 -->
                 <div class="testimonial-card">
                     <div class="mb-3">
                         <span class="text-[8px] font-black uppercase tracking-widest text-[#808a5c] block mb-1">Top Achievement:</span>
@@ -484,7 +478,6 @@
                     </div>
                 </div>
 
-                <!-- Testimonial 8 -->
                 <div class="testimonial-card">
                     <div class="mb-3">
                         <span class="text-[8px] font-black uppercase tracking-widest text-[#808a5c] block mb-1">Top Achievement:</span>
@@ -676,11 +669,15 @@
             }, 200);
         }
 
-        function triggerNavigation(url) {
-            transitionScreen.classList.add('active');
-            setTimeout(() => {
+        function triggerNavigation(url, withLoading = true) {
+            if (withLoading) {
+                transitionScreen.classList.add('active');
+                setTimeout(() => {
+                    window.location.href = url;
+                }, 500);
+            } else {
                 window.location.href = url;
-            }, 500);
+            }
         }
 
         window.addEventListener('load', () => {
@@ -689,7 +686,8 @@
             document.querySelectorAll('.quick-connect').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const url = btn.getAttribute('data-url');
-                    triggerNavigation(url);
+                    // Removed loading animation for quick contacts
+                    triggerNavigation(url, false);
                 });
             });
         });
@@ -756,7 +754,7 @@
             
             if (matrix.m41 >= maxDelta * 0.9) {
                 handle.style.transform = `translateX(${maxDelta}px)`;
-                triggerNavigation(EXTERNAL_URL);
+                triggerNavigation(EXTERNAL_URL, true); // Keep loading for main swipe action
             } else {
                 handle.style.transition = 'transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
                 handle.style.transform = `translateX(0px)`;
