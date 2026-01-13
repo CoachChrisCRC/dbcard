@@ -572,7 +572,6 @@
             </div>
             
             <div class="testimonial-slider" id="testimonial-slider">
-                <!-- Testimonials content... (remains identical to original) -->
                 <div class="testimonial-card">
                     <div class="mb-3">
                         <span class="text-[8px] font-black uppercase tracking-widest text-[#808a5c] block mb-1">Top Achievement:</span>
@@ -691,7 +690,6 @@
             <i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i>
             <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
         </div>
-        <!-- Floating Install Button -->
         <div class="fab hidden" id="fab-install" title="Install App">
             <i data-lucide="download" class="w-5 h-5"></i>
             <div id="dismiss-install" class="dismiss-x" title="Dismiss">
@@ -712,7 +710,7 @@
                 </div>
             </div>
 
-            <!-- Avatar with Dynamic Glow Ring -->
+            <!-- Avatar -->
             <div class="avatar-ring" id="avatar-ring">
                 <div class="avatar-flipper" id="avatar-flipper">
                     <img id="avatar-front" src="https://raw.githubusercontent.com/CoachChrisCRC/linkscard/refs/heads/main/CRC-Logo.png" alt="Logo Front">
@@ -743,7 +741,6 @@
                         <i data-lucide="star" class="w-4 h-4 text-[#808a5c]"></i>
                         <span class="text-[9px] font-black uppercase tracking-widest">Success Stories</span>
                     </button>
-                    <!-- FREE COURSE CTA -->
                     <button id="open-course" class="col-span-2 flex items-center justify-center gap-2 bg-white/50 dark:bg-zinc-800/50 text-zinc-900 dark:text-zinc-100 py-4 rounded-2xl border-2 border-[#808a5c] active:scale-[0.96] transition-all">
                         <i data-lucide="flame" class="w-4 h-4 text-[#808a5c]"></i>
                         <span class="text-[9px] font-black uppercase tracking-widest">Get my Free 14 Day Fundamentals Course</span>
@@ -786,7 +783,8 @@
     <script>
         const EXTERNAL_URL = "https://coachchriscrc.carrd.co";
         const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQXLZhY6w7aWwg5ZjFGoh7T-0xx3WownV46HBKC1iMNqxiOAW8LfbcfqnoXo8YznaaerjeG1_R6vb7c/pub?gid=0&single=true&output=csv";
-        const HIDDEN_MENU_URL = "https://docs.google.com/spreadsheets/d/1Z0_Tu60EA5kuibQ_3hnAUem2fwT843afJvQ0FICxYKs/edit?usp=drivesdk";
+        // UPDATED: Points to the editor view of the sheet
+        const HIDDEN_MENU_URL = "https://docs.google.com/spreadsheets/d/1Z0_Tu60EA5kuibQ_3hnAUem2fwT843afJvQ0FICxYKs/edit";
         const SECRET_PIN = "07320";
 
         const CONTACT_INFO = {
@@ -934,7 +932,7 @@
             hiddenIframe.src = 'about:blank';
         });
 
-        // PWA Install Logic
+        // PWA Install
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
@@ -946,13 +944,10 @@
 
         fabInstall.addEventListener('click', async (e) => {
             if (e.target.closest('#dismiss-install')) return; 
-            
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    fabInstall.classList.add('hidden');
-                }
+                if (outcome === 'accepted') fabInstall.classList.add('hidden');
                 deferredPrompt = null;
             }
         });
@@ -964,25 +959,16 @@
         });
 
         function setTheme(isDark) {
-            if (isDark) {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
+            if (isDark) document.documentElement.classList.add('dark');
+            else document.documentElement.classList.remove('dark');
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
         }
 
         const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            setTheme(savedTheme === 'dark');
-        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            setTheme(true);
-        }
+        if (savedTheme) setTheme(savedTheme === 'dark');
+        else if (window.matchMedia('(prefers-color-scheme: dark)').matches) setTheme(true);
 
-        themeToggle.addEventListener('click', () => {
-            const isDark = document.documentElement.classList.contains('dark');
-            setTheme(!isDark);
-        });
+        themeToggle.addEventListener('click', () => setTheme(!document.documentElement.classList.contains('dark')));
 
         async function runAvatarSequence() {
             setTimeout(() => flipper.style.transform = 'rotateY(180deg)', 800);
@@ -1004,9 +990,7 @@
         function triggerNavigation(url, withLoading = true) {
             if (withLoading) {
                 transitionScreen.classList.add('active');
-                setTimeout(() => {
-                    window.location.href = url;
-                }, 100);
+                setTimeout(() => window.location.href = url, 100);
             } else {
                 window.location.href = url;
             }
@@ -1027,52 +1011,33 @@
             updateLiveStatus();
             setTimeout(revealDashboard, 1500);
             setInterval(updateLiveStatus, 30000);
-
             document.querySelectorAll('.quick-connect').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const url = btn.getAttribute('data-url');
-                    triggerNavigation(url, false);
-                });
+                btn.addEventListener('click', () => triggerNavigation(btn.getAttribute('data-url'), false));
             });
         });
 
         slider.addEventListener('scroll', () => {
             const dots = document.querySelectorAll('.testimonial-dot');
             const index = Math.round(slider.scrollLeft / slider.offsetWidth);
-            dots.forEach((dot, i) => {
-                dot.classList.toggle('active', i === index);
-            });
+            dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
         });
 
         saveVcardBtn.addEventListener('click', () => {
             const vcard = [
-                "BEGIN:VCARD",
-                "VERSION:3.0",
+                "BEGIN:VCARD", "VERSION:3.0",
                 `FN:${CONTACT_INFO.firstName} ${CONTACT_INFO.lastName}`,
-                `ORG:${CONTACT_INFO.org}`,
-                `TEL;TYPE=CELL:${CONTACT_INFO.phone}`,
-                `EMAIL:${CONTACT_INFO.email}`,
-                `URL:${CONTACT_INFO.web}`,
-                "END:VCARD"
+                `ORG:${CONTACT_INFO.org}`, `TEL;TYPE=CELL:${CONTACT_INFO.phone}`,
+                `EMAIL:${CONTACT_INFO.email}`, `URL:${CONTACT_INFO.web}`, "END:VCARD"
             ].join("\n");
-
             const blob = new Blob([vcard], { type: "text/vcard" });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url;
-            a.download = 'CoachChris.vcf';
-            a.click();
+            a.href = url; a.download = 'CoachChris.vcf'; a.click();
         });
 
         let isDragging = false;
         let startX = 0;
-
-        function onStart(e) {
-            isDragging = true;
-            startX = (e.type === 'touchstart') ? e.touches[0].clientX : e.clientX;
-            handle.style.transition = 'none';
-        }
-
+        function onStart(e) { isDragging = true; startX = (e.type === 'touchstart') ? e.touches[0].clientX : e.clientX; handle.style.transition = 'none'; }
         function onMove(e) {
             if (!isDragging) return;
             const currentX = (e.type === 'touchmove') ? e.touches[0].clientX : e.clientX;
@@ -1083,14 +1048,11 @@
             handle.style.transform = `translateX(${delta}px)`;
             swipeText.style.opacity = 1 - (delta / maxDelta);
         }
-
         function onEnd() {
             if (!isDragging) return;
             isDragging = false;
             const matrix = new WebKitCSSMatrix(window.getComputedStyle(handle).transform);
-            const trackWidth = document.querySelector('.swipe-track').offsetWidth;
-            const maxDelta = trackWidth - 56 - 12;
-            
+            const maxDelta = document.querySelector('.swipe-track').offsetWidth - 56 - 12;
             if (matrix.m41 >= maxDelta * 0.9) {
                 handle.style.transform = `translateX(${maxDelta}px)`;
                 triggerNavigation(EXTERNAL_URL, true); 
@@ -1112,18 +1074,10 @@
         closeQrBtn.addEventListener('click', () => qrModal.classList.remove('active'));
         openTestimonialsBtn.addEventListener('click', () => testimonialsModal.classList.add('active'));
         closeTestimonialsBtn.addEventListener('click', () => testimonialsModal.classList.remove('active'));
-        
-        openCourseBtn.addEventListener('click', () => {
-            triggerNavigation(EXTERNAL_URL, true);
-        });
+        openCourseBtn.addEventListener('click', () => triggerNavigation(EXTERNAL_URL, true));
 
         new QRCode(document.getElementById("qrcode"), {
-            text: window.location.href,
-            width: 240,
-            height: 240,
-            colorDark : "#000000",
-            colorLight : "#ffffff",
-            correctLevel : QRCode.CorrectLevel.H
+            text: window.location.href, width: 240, height: 240, colorDark : "#000000", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.H
         });
     </script>
 </body>
