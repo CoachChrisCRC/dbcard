@@ -759,7 +759,8 @@
 
     <script>
         const EXTERNAL_URL = "https://coachchriscrc.carrd.co";
-        // Updated Coaching URL to dedicated landing page
+        // Updated Fundamentals URL
+        const FUNDAMENTALS_URL = "https://coachchriscrc.github.io/14dayfundamentals-lp/";
         const COACHING_LP_URL = "https://coachchriscrc.github.io/oc-lp";
         const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQXLZhY6w7aWwg5ZjFGoh7T-0xx3WownV46HBKC1iMNqxiOAW8LfbcfqnoXo8YznaaerjeG1_R6vb7c/pub?gid=0&single=true&output=csv";
         const HIDDEN_MENU_URL = "https://docs.google.com/spreadsheets/d/1Z0_Tu60EA5kuibQ_3hnAUem2fwT843afJvQ0FICxYKs/edit";
@@ -1036,8 +1037,8 @@
         closeQrBtn.addEventListener('click', () => qrModal.classList.remove('active'));
         openTestimonialsBtn.addEventListener('click', () => testimonialsModal.classList.add('active'));
         closeTestimonialsBtn.addEventListener('click', () => testimonialsModal.classList.remove('active'));
-        openCourseBtn.addEventListener('click', () => triggerNavigation(EXTERNAL_URL, true));
-        // Linked to the new GitHub Pages LP
+        // Updated course link
+        openCourseBtn.addEventListener('click', () => triggerNavigation(FUNDAMENTALS_URL, true));
         applyCoachingBtn.addEventListener('click', () => triggerNavigation(COACHING_LP_URL, true));
 
         new QRCode(document.getElementById("qrcode"), {
