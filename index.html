@@ -683,7 +683,7 @@
 
             <h2 class="rock-salt font-bold text-2xl text-main uppercase tracking-tight mb-3">COACH CHRIS</h2>
             <h3 class="text-main font-black text-2xl uppercase tracking-tighter mb-1">Chris Hedley</h3>
-            <p class="text-muted text-[10px] font-bold uppercase tracking-[0.25em] mb-4">Specialist in High-Performance Strength & Functional Longevity</p>
+            <p class="text-muted text-[10px] font-bold uppercase tracking-[0.25em] mb-4">Specialist in Practical Strength & Physical Resilience</p>
             
             <div class="flex flex-col gap-1 text-[10px] font-black uppercase tracking-[0.2em] text-sub mb-8 italic">
                 <span>Circular Roots Coaching</span>
@@ -773,7 +773,8 @@
             email: "Circularrootscoaching@gmail.com",
             web: "https://coachchriscrc.carrd.co",
             whatsapp: "https://wa.me/447925116794",
-            title: "Online Coach & PT",
+            // Optimized title and org for future contact searching (e.g., "fitness coach")
+            title: "Online Coach & PT (Fitness, Strength & Longevity)",
             org: "Circular Roots Coaching; TRAIN UNCNVNTNL"
         };
 
@@ -995,16 +996,22 @@
         });
 
         saveVcardBtn.addEventListener('click', () => {
+            // Enhanced vCard with Company and Title for search discoverability
             const vcard = [
                 "BEGIN:VCARD", "VERSION:3.0",
-                `FN:${CONTACT_INFO.firstName} ${CONTACT_INFO.lastName}`,
-                `ORG:${CONTACT_INFO.org}`, `TEL;TYPE=CELL:${CONTACT_INFO.phone}`,
-                `EMAIL:${CONTACT_INFO.email}`, `URL:${CONTACT_INFO.web}`, "END:VCARD"
+                `N:${CONTACT_INFO.lastName};${CONTACT_INFO.firstName};;${CONTACT_INFO.suffix};`,
+                `FN:${CONTACT_INFO.firstName} ${CONTACT_INFO.lastName} ${CONTACT_INFO.suffix}`,
+                `ORG:${CONTACT_INFO.org}`, 
+                `TITLE:${CONTACT_INFO.title}`,
+                `TEL;TYPE=CELL,VOICE:${CONTACT_INFO.phone}`,
+                `EMAIL;TYPE=PREF,INTERNET:${CONTACT_INFO.email}`, 
+                `URL:${CONTACT_INFO.web}`, 
+                "END:VCARD"
             ].join("\n");
             const blob = new Blob([vcard], { type: "text/vcard" });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url; a.download = 'CoachChris.vcf'; a.click();
+            a.href = url; a.download = `${CONTACT_INFO.firstName}_${CONTACT_INFO.lastName}.vcf`; a.click();
         });
 
         let isDragging = false;
